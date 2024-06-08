@@ -14,7 +14,7 @@ EXPOSE 3000
 CMD [ "node", "app.mjs" ]
 
 # https://github.com/bindian0509/docker-k8s-learning/blob/9d620832498ca6421a547f22e1e8f4fe86c4475b/first-demo/Dockerfile
-# docker build . = 빌드
-# docker run -p <호스트 포트>:<도커 내부 포트> 빌드 이미지
+# docker build . -> 도커 이미지 빌드
+# docker run -p <호스트 포트>:<도커 내부 포트> 빌드 이미지  -> 이미지 기반 컨테이너 실행
 # docker ps 도커 상태
 # docker stop 이미지
