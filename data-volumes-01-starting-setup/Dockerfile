@@ -1,0 +1,14 @@
+FROM node:14
+
+WORKDIR /app
+
+# 작업 디렉토리를 설정하면 .로 써도 무방
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+
+CMD ["node", "server.js" ]

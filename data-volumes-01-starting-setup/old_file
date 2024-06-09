@@ -1,0 +1,19 @@
+FROM node:14
+
+WORKDIR /app
+
+# 작업 디렉토리를 설정하면 .로 써도 무방
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+
+# Volumes
+# 컨테이너 외부 폴더에 매핑 될 컨테이너 내부 위치
+# server.js의 코드를 보면 최종적으로 /feedback를 활용하고 컨테이너 내부에서의 작업 공간 아래 폴더에 존재함
+VOLUME [ "/app/feedback" ]
+
+CMD ["node", "server.js" ]
