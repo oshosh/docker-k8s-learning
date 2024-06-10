@@ -28,6 +28,9 @@ app.post("/create", async (req, res) => {
 
   const adjTitle = title.toLowerCase();
 
+  console.log('TEST');
+  console.log('nodemon을 통해서 런타임에서 확인하자');
+
   const tempFilePath = path.join(__dirname, "temp", adjTitle + ".txt");
   const finalFilePath = path.join(__dirname, "feedback", adjTitle + ".txt");
 

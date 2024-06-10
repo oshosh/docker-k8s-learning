@@ -121,3 +121,58 @@ docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback feed
  docker volume prune
   - 익명 볼륨 제거
 ```
+
+# 바인드 마운트
+```
+docker desktop > settings > Resources > File sharing > 파일 공유 공간이 적용 되는 곳인지 확인
+docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "<호스트 머신 전체 절대경로>:/app(컨테이너 작업디렉토리)" feedback-node:volumes
+
+macOS / Linux: -v $(pwd):/app
+Windows: -v "%cd%":/app
+
+docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app" feedback-node:volumes
+
+위 명령어 문제 발생
+ - "-v <호스트 머신 전체 절대경로>:/app(컨테이너 작업디렉토리)" 에 의해 /app 폴더의 모든 것을 로컬 폴더로 덮어쓰기 때문에 문제가 생김 그러면서 node_module이 사라지게 됨
+ - 익명 볼륨을 통해 -v /app/node_modules를 사라지게 않게 해야함. (익명 볼륨은 컨테이너 종료 시 삭제)
+
+docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app" -v /app/node_modules feedback-node:volumes
+
+-v /app/node_modules 명령은 VOLUME ["/app/node_modules"]와 같다 
+
+위 명령어 문제 발생
+ - 노드 서버 런타임 수정 시 다시 껏다 켜야함
+
+ package.json 수정
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  devDependencies": {
+    "nodemon": "2.0.4"
+  }
+
+  dockerfile 수정
+  FROM node:14
+
+  WORKDIR /app
+
+  # 작업 디렉토리를 설정하면 .로 써도 무방
+  COPY package.json .
+
+  RUN npm install
+
+  COPY . .
+
+  EXPOSE 80
+
+  # VOLUME ["/app/node_modules"]
+
+  CMD ["node", "server.js" ]
+
+  docker 이미지 재빌드
+  docker container 재 실행
+
+  sever.js console 추가 후
+  docker logs feedback-app 확인
+
+```
