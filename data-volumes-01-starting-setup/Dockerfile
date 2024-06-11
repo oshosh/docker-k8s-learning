@@ -9,7 +9,13 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 80
+# RUN npm install 아래 써서 docker build 시 npm install 재실행을 막고 캐싱으로 docker 레이어를 고려함
+ARG DEFAULT_PORT=80 
+
+# ENV PORT 80
+ENV PORT $DEFAULT_PORT
+
+EXPOSE $PORT
 
 # VOLUME ["/app/node_modules"]
 

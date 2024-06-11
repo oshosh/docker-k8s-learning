@@ -176,3 +176,51 @@ docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "
   docker logs feedback-app 확인
 
 ```
+
+# 읽기 전용 볼륨
+```
+:ro 도커가 폴더나 그 하위 폴더를 쓸수 없게 함 (read-only)
+ - docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v /app/node_modules feedback-node:volumes
+```
+
+# 도커 볼륨 관리
+
+```
+docker volume ls
+ - 도커 볼륨 list
+
+docker volume create <feedback-files>
+ - 도커 볼륨 수동 생성
+
+docker volume inspect <feedback>
+ - 도커 볼륨 검사
+ 
+docker volume rm <feedback>
+ - 도커 볼륨 삭제
+ - 명명된 볼륨으로 설정 했다면 그 안의 자료도 다 날라감
+```
+
+# COPY VS 바인드 마운트
+```
+바인드 마운트를 사용하면 다시 복사를 해올 수 있기 때문에 Dockerfile에서 COPY를 안써도 된다고 생각하지만 도커의 개발 환경에서만 사용하고 개발환경이 아닐 경우에는 COPY를 써야한다.
+```
+
+# env
+
+```
+docker build -t feedback-node:env .
+
+--env = -e 랑 같다
+-e PORT=8000 -e 블라블라
+ => 여러개도 가능
+
+docker run -d -p 3000:8000 --env PORT=8000 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env  
+
+.env 파일을 만들었을 경우
+docker run -d -p 3000:8000 --env-file ./.env --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env  
+```
+
+# 빌드 인수
+```
+docker build -t feedback-node:dev --build-arg DEFAULT_PORT=8000 .
+```
