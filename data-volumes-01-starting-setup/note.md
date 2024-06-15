@@ -123,6 +123,7 @@ docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback feed
 ```
 
 # 바인드 마운트
+
 ```
 docker desktop > settings > Resources > File sharing > 파일 공유 공간이 적용 되는 곳인지 확인
 docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "<호스트 머신 전체 절대경로>:/app(컨테이너 작업디렉토리)" feedback-node:volumes
@@ -138,7 +139,7 @@ docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "
 
 docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app" -v /app/node_modules feedback-node:volumes
 
--v /app/node_modules 명령은 VOLUME ["/app/node_modules"]와 같다 
+-v /app/node_modules 명령은 VOLUME ["/app/node_modules"]와 같다
 
 위 명령어 문제 발생
  - 노드 서버 런타임 수정 시 다시 껏다 켜야함
@@ -178,6 +179,7 @@ docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "
 ```
 
 # 읽기 전용 볼륨
+
 ```
 :ro 도커가 폴더나 그 하위 폴더를 쓸수 없게 함 (read-only)
  - docker run -d -p 3000:80 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v /app/node_modules feedback-node:volumes
@@ -194,13 +196,14 @@ docker volume create <feedback-files>
 
 docker volume inspect <feedback>
  - 도커 볼륨 검사
- 
+
 docker volume rm <feedback>
  - 도커 볼륨 삭제
  - 명명된 볼륨으로 설정 했다면 그 안의 자료도 다 날라감
 ```
 
 # COPY VS 바인드 마운트
+
 ```
 바인드 마운트를 사용하면 다시 복사를 해올 수 있기 때문에 Dockerfile에서 COPY를 안써도 된다고 생각하지만 도커의 개발 환경에서만 사용하고 개발환경이 아닐 경우에는 COPY를 써야한다.
 ```
@@ -214,13 +217,14 @@ docker build -t feedback-node:env .
 -e PORT=8000 -e 블라블라
  => 여러개도 가능
 
-docker run -d -p 3000:8000 --env PORT=8000 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env  
+docker run -d -p 3000:8000 --env PORT=8000 --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env
 
 .env 파일을 만들었을 경우
-docker run -d -p 3000:8000 --env-file ./.env --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env  
+docker run -d -p 3000:8000 --env-file ./.env --rm --name feedback-app -v feedback:/app/feedback -v "/Users/osh/Desktop/my-repo/docker-k8s-learning/data-volumes-01-starting-setup:/app:ro" -v/app/temp -v /app/node_modules feedback-node:env
 ```
 
 # 빌드 인수
+
 ```
 docker build -t feedback-node:dev --build-arg DEFAULT_PORT=8000 .
 ```
