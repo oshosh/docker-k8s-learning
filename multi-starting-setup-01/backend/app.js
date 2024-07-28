@@ -87,17 +87,18 @@ mongoose.connect(
   // 'mongodb://localhost:27017/course-goals',
   // "mongodb://host.docker.internal:27017/course-goals",
   // "mongodb://mongodb:27017/course-goals",
-  "mongodb://max:secret@mongoDB:27017/course-goals?authSource=admin",
+  // "mongodb://max:secret@mongoDB:27017/course-goals?authSource=admin",
+  `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongoDB:27017/course-goals?authSource=admin`,
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true, 
   },
   (err) => {
     if (err) {
       console.error("FAILED TO CONNECT TO MONGODB");
       console.error(err);
     } else {
-      console.log("CONNECTED TO MONGODB");
+      console.log("CONNECTED TO MONGODB!!");
       app.listen(80);
     }
   }
