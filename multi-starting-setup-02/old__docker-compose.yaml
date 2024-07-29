@@ -1,0 +1,55 @@
+services:
+  mongodb:
+    image: 'mongo' # 로컬이나 도커 허브 리포지토리에서 조회 혹은 URL
+    volumes:
+      - data:/data/db
+    
+    # 환경 변수 설정은 environment or env_file
+    # key:value 혹은 env_file 는 '-' 가 필수적으로 필요함
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: max
+    #   MONGO_INITDB_ROOT_PASSWORD: secret
+      # - MONGO_INITDB_ROOT_PASSWORD=secret
+    env_file:
+      - ./env/mongo.env
+    # 도커 컴포포즈는 모든 서비스를 즉시 그 네트워크에 추가하기 때문에 따로 만들 필요가 없다. 
+    # 따라서 하나의 동일한 compose 파일에 정의된 모든 서비스는 이미 도커의 동일한 네트워크 일부가 됨.
+    # networks:
+    #   - goals-net
+  backend:
+    build: ./backend # docker-compose.yaml 기준으로 해당하는 폴더의 dockerfile 경로까지
+    # 임의의 dockerfile이름이 Dockerfile-dev 인것에 대하여 경로를 지정하고자 할때 
+    # build: 
+    #   context: ./backend
+    #   dockerfile: Dockerfile-dev
+      # dockerfile에 ARG의 값을 전달
+      # args: 
+      #   - some-arg=1
+    ports:
+      - '80:80'
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app # 바인드 마운트
+      - /app/node_modules # 익명 볼륨
+    env_file:
+      - ./env/backend.env
+    # 연계된 실행 서비스 이름을 넣어서 순서가 보장되도록 한다.
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./backend
+    ports:
+      - '3000:3000'
+    volumes:
+     - ./frontend/src:/app/src
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+# services에서 사용 중인 명명된 볼륨이 나열되어야함.
+# 명명된 볼륨을 인식하기 위해 data 뒤에 나열된게 없음
+# 다른 서비스에서 data를 동일한 볼륨 이름으로 사용하면 그 볼륨은 공유가 됨
+# 익명 볼륨과 바인드 마운트는 여기에 지정할 필요가 없음.
+volumes:
+  data:
+  logs:
